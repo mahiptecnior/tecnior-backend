@@ -52,19 +52,25 @@ router.post(
     }
 
     const {
-      name, slug, description, short_description, price, price_label,
-      category, icon, features, image_url, is_featured, is_active, sort_order,
+      name, slug, tagline, description, short_description, price, price_label,
+      category, icon, features, highlights, detailed_features, plans, faqs,
+      image_url, is_featured, is_active, sort_order,
     } = req.body;
 
     try {
       const [result] = await pool.query(
-        `INSERT INTO products (name, slug, description, short_description, price, price_label,
-          category, icon, features, image_url, is_featured, is_active, sort_order)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO products (name, slug, tagline, description, short_description, price, price_label,
+          category, icon, features, highlights, detailed_features, plans, faqs,
+          image_url, is_featured, is_active, sort_order)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
-          name, slug, description || null, short_description || null,
+          name, slug, tagline || null, description || null, short_description || null,
           price || null, price_label || 'Starting from', category || null,
           icon || 'Package', features ? JSON.stringify(features) : null,
+          highlights ? JSON.stringify(highlights) : null,
+          detailed_features ? JSON.stringify(detailed_features) : null,
+          plans ? JSON.stringify(plans) : null,
+          faqs ? JSON.stringify(faqs) : null,
           image_url || null, is_featured ?? false, is_active ?? true, sort_order ?? 0,
         ]
       );
@@ -83,8 +89,9 @@ router.post(
 // PUT /api/products/:id
 router.put('/:id', authenticate, requireAdmin, async (req, res) => {
   const {
-    name, slug, description, short_description, price, price_label,
-    category, icon, features, image_url, is_featured, is_active, sort_order,
+    name, slug, tagline, description, short_description, price, price_label,
+    category, icon, features, highlights, detailed_features, plans, faqs,
+    image_url, is_featured, is_active, sort_order,
   } = req.body;
 
   try {
@@ -94,13 +101,17 @@ router.put('/:id', authenticate, requireAdmin, async (req, res) => {
     }
 
     await pool.query(
-      `UPDATE products SET name=?, slug=?, description=?, short_description=?, price=?,
-        price_label=?, category=?, icon=?, features=?, image_url=?, is_featured=?,
-        is_active=?, sort_order=? WHERE id=?`,
+      `UPDATE products SET name=?, slug=?, tagline=?, description=?, short_description=?, price=?,
+        price_label=?, category=?, icon=?, features=?, highlights=?, detailed_features=?,
+        plans=?, faqs=?, image_url=?, is_featured=?, is_active=?, sort_order=? WHERE id=?`,
       [
-        name, slug, description || null, short_description || null,
+        name, slug, tagline || null, description || null, short_description || null,
         price || null, price_label || 'Starting from', category || null,
         icon || 'Package', features ? JSON.stringify(features) : null,
+        highlights ? JSON.stringify(highlights) : null,
+        detailed_features ? JSON.stringify(detailed_features) : null,
+        plans ? JSON.stringify(plans) : null,
+        faqs ? JSON.stringify(faqs) : null,
         image_url || null, is_featured ?? false, is_active ?? true,
         sort_order ?? 0, req.params.id,
       ]

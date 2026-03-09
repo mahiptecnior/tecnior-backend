@@ -32,6 +32,10 @@ app.use('/api/seo', require('./routes/seo'));
 app.use('/api/socials', require('./routes/socials'));
 app.use('/api/settings', require('./routes/settings'));
 app.use('/api/users', require('./routes/users'));
+app.use('/api/portfolio', require('./routes/portfolio'));
+app.use('/api/case-studies', require('./routes/caseStudies'));
+app.use('/api/blog', require('./routes/blog'));
+app.use('/api/pricing', require('./routes/pricing'));
 
 // Health check
 app.get('/api/health', (req, res) => {

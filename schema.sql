@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS products (
   id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
   name VARCHAR(255) NOT NULL,
   slug VARCHAR(255) UNIQUE NOT NULL,
+  tagline TEXT,
   description TEXT,
   short_description TEXT,
   price DECIMAL(10,2),
@@ -32,6 +33,10 @@ CREATE TABLE IF NOT EXISTS products (
   category VARCHAR(100),
   icon VARCHAR(50) DEFAULT 'Package',
   features JSON,
+  highlights JSON,
+  detailed_features JSON,
+  plans JSON,
+  faqs JSON,
   image_url TEXT,
   is_featured BOOLEAN DEFAULT FALSE,
   is_active BOOLEAN DEFAULT TRUE,
@@ -127,12 +132,81 @@ CREATE TABLE IF NOT EXISTS social_links (
 );
 
 -- 8. Site Settings
+-- Products: new columns (run once on existing DB)
+-- ALTER TABLE products ADD COLUMN IF NOT EXISTS tagline TEXT;
+-- ALTER TABLE products ADD COLUMN IF NOT EXISTS highlights JSON;
+-- ALTER TABLE products ADD COLUMN IF NOT EXISTS detailed_features JSON;
+-- ALTER TABLE products ADD COLUMN IF NOT EXISTS plans JSON;
+-- ALTER TABLE products ADD COLUMN IF NOT EXISTS faqs JSON;
+
 CREATE TABLE IF NOT EXISTS site_settings (
   id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
   setting_key VARCHAR(100) UNIQUE NOT NULL,
   setting_value TEXT,
   setting_group VARCHAR(50) DEFAULT 'general',
   is_encrypted BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- 9. Portfolio
+CREATE TABLE IF NOT EXISTS portfolio (
+  id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+  title VARCHAR(255) NOT NULL,
+  slug VARCHAR(255) UNIQUE NOT NULL,
+  client VARCHAR(255),
+  category VARCHAR(100),
+  description TEXT,
+  challenge TEXT,
+  solution TEXT,
+  results TEXT,
+  technologies JSON,
+  metrics JSON,
+  image_url TEXT,
+  is_active BOOLEAN DEFAULT TRUE,
+  is_featured BOOLEAN DEFAULT FALSE,
+  sort_order INT DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- 10. Case Studies
+CREATE TABLE IF NOT EXISTS case_studies (
+  id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+  title VARCHAR(255) NOT NULL,
+  slug VARCHAR(255) UNIQUE NOT NULL,
+  client VARCHAR(255),
+  industry VARCHAR(100),
+  category VARCHAR(50) DEFAULT 'client-project',
+  product_used VARCHAR(255),
+  icon VARCHAR(50) DEFAULT 'Briefcase',
+  challenge TEXT,
+  solution TEXT,
+  image_url TEXT,
+  results JSON,
+  testimonial JSON,
+  tags JSON,
+  is_active BOOLEAN DEFAULT TRUE,
+  is_featured BOOLEAN DEFAULT FALSE,
+  sort_order INT DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- 11. Blog Posts
+CREATE TABLE IF NOT EXISTS blog_posts (
+  id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+  title VARCHAR(255) NOT NULL,
+  slug VARCHAR(255) UNIQUE NOT NULL,
+  excerpt TEXT,
+  content TEXT,
+  cover_image TEXT,
+  author VARCHAR(255),
+  category VARCHAR(100),
+  tags JSON,
+  status VARCHAR(20) DEFAULT 'draft',
+  published_at TIMESTAMP NULL,
+  is_featured BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
